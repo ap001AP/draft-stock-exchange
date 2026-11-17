@@ -1,0 +1,223 @@
+/* =========================================================================
+   Draft Stock Exchange — styles
+   Colours mirror R/theme.R. Card motion is driven from www/cards.js through
+   CSS variables (--mx, --my = pointer position, --shine = how hard it shines).
+   ========================================================================= */
+:root {
+  --bg: #1d1029; --panel: #2b1a3f; --panel-hi: #3a2556; --line: #4c3470;
+  --text: #f3eaff; --muted: #b9a6d3;
+  --pink: #e0559a; --violet: #9b6bdf; --blush: #f2b6d0; --blue: #4a90d9;
+  --up: #7fe0a8; --down: #ff8fa8;
+}
+
+body { background: var(--bg); }
+.navbar { border-bottom: 1px solid var(--line); }
+.navbar-brand { font-family: "Space Grotesk", sans-serif; letter-spacing: .02em; }
+.navbar-brand .tick { color: var(--pink); }
+
+/* ---- dashboard tiles ---------------------------------------------------- */
+.dse-kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.dse-kpi .lbl { color: var(--muted); font-size: .78rem; }
+.dse-kpi .val { font-size: 1.9rem; font-weight: 600; line-height: 1.15; }
+.dse-kpi .sub { font-size: .78rem; color: var(--muted); }
+.dse-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; height: 100%; }
+.dse-panel h5 { text-align: center; font-size: 1rem; margin-bottom: 2px; }
+.dse-panel .cap { text-align: center; color: var(--muted); font-size: .78rem; margin-bottom: 8px; }
+.dse-demo-banner { background: var(--panel-hi); border: 1px dashed var(--violet); color: var(--muted);
+  border-radius: 10px; padding: 6px 12px; font-size: .82rem; margin-bottom: 12px; }
+.dse-table { width: 100%; font-size: .88rem; --bs-table-bg: transparent; --bs-table-color: var(--text); }
+.dse-table, .dse-table th, .dse-table td { background: transparent !important; color: var(--text); }
+.dse-table th { color: var(--muted); font-weight: 400; border-bottom: 1px solid var(--line); padding: 6px 4px; }
+.dse-table td { border-bottom: 1px solid var(--line); padding: 6px 4px; }
+.dse-up { color: var(--up) !important; }
+.dse-down { color: var(--down) !important; }
+.bslib-sidebar-layout > .sidebar { background: var(--panel) !important; }
+
+/* ---- card grid ---------------------------------------------------------- */
+.dse-grid { display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; padding: 8px 0 16px; }
+
+/* ---- the card ----------------------------------------------------------- */
+.dse-card {
+  --mx: 50%; --my: 50%; --shine: 0;
+  --tier: var(--blue);
+  width: 228px; height: 330px;
+  perspective: 900px;
+  cursor: pointer;
+  user-select: none;
+}
+.dse-card.tier-legendary { --tier: var(--pink); }
+.dse-card.tier-rare      { --tier: var(--violet); }
+.dse-card.tier-common    { --tier: var(--blue); }
+.dse-card.tier-bust      { --tier: var(--blush); }
+
+.dse-card-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.dse-card.sealed .dse-card-inner { transform: rotateY(180deg); } /* until JS takes over */
+
+.dse-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 16px;
+  background: var(--panel-hi);
+  border: 2px solid var(--tier);
+  padding: 12px 14px;
+  color: var(--text); font-size: .82rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+.dse-back { transform: rotateY(180deg); }
+/* Only the face you can see takes clicks (Safari hits hidden 3D faces). */
+.dse-card:not(.is-flipped):not(.sealed) .dse-back,
+.dse-card.is-flipped .dse-front,
+.dse-card.sealed .dse-front { pointer-events: none; }
+
+.dse-card-top { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+.dse-tier { background: var(--tier); color: var(--bg); font-size: .7rem; font-weight: 600;
+  padding: 2px 9px; border-radius: 7px; text-transform: uppercase; letter-spacing: .05em; }
+.dse-slot { color: var(--muted); font-size: .72rem; }
+
+.dse-photo { position: relative; height: 128px; margin: 10px 0 8px; border-radius: 11px;
+  background: var(--line); overflow: hidden; z-index: 2; }
+.dse-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.dse-silhouette { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; }
+.dse-photo.no-photo .dse-silhouette { display: flex; }
+.dse-silhouette::before { /* simple head-and-shoulders shape */
+  content: ""; position: absolute; bottom: -30px; width: 120px; height: 120px; border-radius: 50% 50% 0 0;
+  background: var(--panel); box-shadow: 0 -78px 0 -34px var(--panel);
+}
+.dse-jersey { position: relative; font-family: "Space Grotesk", sans-serif; font-size: 1.6rem;
+  font-weight: 700; color: var(--tier); margin-top: 52px; }
+
+.dse-name { font-size: 1.05rem; font-weight: 600; position: relative; z-index: 2; }
+.dse-sub { color: var(--muted); font-size: .72rem; margin-bottom: 6px; position: relative; z-index: 2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dse-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dse-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--line);
+  position: relative; z-index: 2; }
+.dse-row:last-of-type { border-bottom: none; }
+.dse-label { color: var(--muted); }
+.dse-value { font-weight: 600; white-space: nowrap; }
+.dse-label { white-space: nowrap; margin-right: 8px; }
+.dse-back-name { font-size: .95rem; font-weight: 600; margin-bottom: 6px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--tier); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dse-back-name + .dse-back-title { margin-top: 0; }
+.dse-back-title { font-weight: 600; margin: 8px 0 2px; color: var(--tier); }
+.dse-back-title:first-child { margin-top: 0; }
+.dse-hint { color: var(--muted); font-size: .7rem; margin-top: 8px; text-align: center; }
+
+.dse-add { position: absolute; right: 20px; top: 46px; z-index: 3; width: 26px; height: 26px;
+  border-radius: 50%; border: 1px solid var(--tier); background: var(--panel); color: var(--tier);
+  font-weight: 700; line-height: 1; padding: 0; }
+.dse-add:hover, .dse-add.added { background: var(--tier); color: var(--bg); }
+.dse-add.added { transform: scale(1.2); transition: transform .15s; }
+
+/* ---- holographic foil, by rarity ---------------------------------------
+   One layer on top of the front face. Its gradient is centred on the
+   pointer (--mx, --my) and fades in with --shine as the card tilts.       */
+.dse-foil {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  border-radius: inherit;
+  opacity: calc(var(--shine) * .55);
+  mix-blend-mode: color-dodge;
+  transition: opacity .2s;
+}
+.tier-legendary .dse-foil {
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.55), transparent 45%),
+    linear-gradient(115deg, #ff5fa2 0%, #ffd36b 20%, #7fe0a8 40%, #5fc8ff 60%, #b47bff 80%, #ff5fa2 100%);
+  background-size: 100% 100%, 220% 220%;
+  background-position: center, var(--mx) var(--my);
+  opacity: calc(.18 + var(--shine) * .6);
+}
+.tier-rare .dse-foil {
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.4), transparent 45%),
+    linear-gradient(115deg, #6d3fd0, #c4a6ff, #6d3fd0);
+  background-size: 100% 100%, 200% 200%;
+  background-position: center, var(--mx) var(--my);
+}
+.tier-common .dse-foil {
+  background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.22), transparent 50%);
+}
+/* Busts look worn: no foil, faded colours and a crack across the face. */
+.tier-bust .dse-front { filter: saturate(.45) brightness(.92); }
+.tier-bust .dse-foil {
+  opacity: .5; mix-blend-mode: normal;
+  background:
+    linear-gradient(152deg, transparent 47.6%, rgba(242,182,208,.55) 48%, transparent 48.6%),
+    linear-gradient(28deg, transparent 61.6%, rgba(242,182,208,.4) 62%, transparent 62.5%);
+}
+
+/* ---- pack covers (sealed cards) ----------------------------------------- */
+.dse-cover { display: none; }
+.dse-card.sealed .dse-back { border-color: var(--pink); background:
+  repeating-linear-gradient(45deg, var(--panel) 0 12px, var(--panel-hi) 12px 24px); }
+.dse-card.sealed .dse-back-content { display: none; }
+.dse-card.sealed .dse-cover { display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 100%; }
+.dse-cover-mark { font-family: "Space Grotesk", sans-serif; font-size: 2.6rem; font-weight: 700;
+  color: var(--pink); letter-spacing: .08em; }
+.dse-cover-sub { color: var(--muted); font-size: .8rem; }
+
+/* deal-in animation for freshly opened packs */
+@keyframes dse-deal { from { transform: translateY(40px) rotate(-6deg) scale(.9); opacity: 0; }
+                      to   { transform: none; opacity: 1; } }
+.dse-pack .dse-card { animation: dse-deal .55s cubic-bezier(.2,.9,.3,1.25) both; }
+.dse-pack .dse-card:nth-child(2) { animation-delay: .12s; }
+.dse-pack .dse-card:nth-child(3) { animation-delay: .24s; }
+.dse-pack .dse-card:nth-child(4) { animation-delay: .36s; }
+.dse-pack .dse-card:nth-child(5) { animation-delay: .48s; }
+
+/* ---- portfolio tray (drop target, always visible) ------------------------ */
+.dse-tray { position: sticky; bottom: 0; z-index: 10; margin-top: 12px;
+  background: var(--panel); border-top: 1px solid var(--line);
+  display: flex; align-items: center; gap: 18px; padding: 10px 18px; }
+.dse-tray .drop { flex: 1; border: 1.5px dashed var(--line); border-radius: 12px; padding: 10px 14px;
+  color: var(--muted); font-size: .85rem; transition: all .15s; }
+.dse-tray .drop.over { border-color: var(--pink); color: var(--text); background: var(--panel-hi); }
+#tray_stats { display: flex; gap: 22px; }
+.dse-tray .stat { text-align: right; min-width: 70px; }
+.dse-tray .stat .val { font-size: 1.2rem; font-weight: 600; }
+.dse-tray .stat .lbl { font-size: .72rem; color: var(--muted); }
+.dse-card.dragging { opacity: .45; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dse-pack .dse-card { animation: none; }
+}
+
+/* ---- About the data tab ---------------------------------------------------- */
+.dse-est { color: var(--blush) !important; font-weight: 500; }
+.dse-check { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--line); }
+.dse-check:last-child { border-bottom: none; }
+.dse-pill { display: inline-block; align-self: start; height: 22px; line-height: 16px; font-size: .7rem; font-weight: 600; padding: 3px 0; width: 56px;
+  text-align: center; border-radius: 7px; color: var(--bg); }
+.dse-pill.PASS { background: var(--up); }
+.dse-pill.WARN { background: #ffd36b; }
+.dse-pill.FAIL { background: var(--down); }
+.dse-check .what { font-weight: 600; }
+.dse-check .why { color: var(--muted); font-size: .85rem; }
+
+/* The back holds more rows than the front (name, college, combine, trade),
+   so it uses tighter spacing to always fit inside the card. */
+.dse-back { padding: 10px 14px; }
+.dse-back .dse-row { padding: 2px 0; font-size: .76rem; }
+.dse-back .dse-back-title { margin: 5px 0 1px; font-size: .78rem; }
+.dse-back .dse-back-name { margin-bottom: 4px; padding-bottom: 4px; }
+.dse-back .dse-hint { margin-top: 4px; }
+
+/* Phones: no drag-and-drop on touch screens (the + button does the job),
+   so the tray shrinks to just the portfolio numbers. */
+@media (max-width: 600px) {
+  .dse-tray { padding: 6px 14px; gap: 10px; }
+  .dse-tray .drop { padding: 6px 10px; font-size: .75rem; }
+  .dse-tray .drop::after { content: " (or tap +)"; }
+  .dse-tray .stat .val { font-size: 1rem; }
+  .dse-tray .stat .lbl { font-size: .65rem; }
+}
+
+.dse-note { margin-left: 6px; font-size: .62rem; font-weight: 500; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; vertical-align: 1px; cursor: help; }

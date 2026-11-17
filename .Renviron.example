@@ -1,0 +1,3 @@
+# Copy this file to .Renviron (same folder), paste your key, then restart R.
+# Free key: https://collegefootballdata.com/key
+CFBD_API_KEY=paste_your_key_here
